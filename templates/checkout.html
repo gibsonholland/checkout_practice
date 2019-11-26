@@ -1,7 +1,25 @@
-{% extends "basic_layout.html" %}
+{% extends "checkout_layout.html" %}
 
 {% block title %}Checkout | {{ super() }}{% endblock %}
 
 {% block header %}Checkout Page{% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+<span>Select Items</span>
+<form>
+    <p class="item">Red Balloons</p>
+    <p class="price">$10 / Dozen</p>
+    <input type="number" name="redballoon">
+    <br>
+    <p class="item">Blue Balloons</p>
+    <p class="price">$11 / Dozen</p>
+    <input type="number" name="blueballoons">
+    <br>
+    <p class="item">Yellow Balloons</p>
+    <p class="price">$9 / Dozen</p>
+    <input type="number" name="blueballoons">
+    <br>
+    <input type="submit" name="submitbutton" value="Add to Cart!">
+</form>
+
+{% endblock %}
