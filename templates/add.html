@@ -1,0 +1,19 @@
+{% extends "basic_layout.html" %}
+
+{% block title %}Addition | {{ super() }}{% endblock %}
+
+{% block header %}Practicing Addition{% endblock %}
+
+{% block content %}
+<span class="a">Gimme Numbers!</span>
+<form calss="b" action="{{ url_for('save') }}" method="POST">
+        <input type="number" name="num1" value="{{ saves.get('num1', '') }}" autofocus>
+        <input type="number" name="num2" value="{{ saves.get('num2', '') }}">
+        <br>
+        <input type="submit" value="Add 'Em!">
+</form>
+<span class="c">The total is {{ total }}</span>
+
+{% endblock %}
+
+{% block image %}<img src="/static/IMG/numbers.jpg" alt="numbers">{% endblock %}
