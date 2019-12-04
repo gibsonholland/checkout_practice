@@ -1,7 +1,10 @@
 from flask import (Flask, render_template, url_for,
-                   redirect, request, make_response)
+                   redirect, request, make_response, 
+                   flash, jsonify)
 from custom_converters.float_converter import ConvertFloat
+import pyrebase
 import json
+from options import DEFAULT
 
 """ 
 
@@ -17,9 +20,16 @@ This creates a local URL and enabled debug mode
 
 app = Flask(__name__)
 app.url_map.converters['float'] = ConvertFloat
+app.config.from_object('config')
+
+app.secret_key = app.config["SECRET_KEY"]
+CONFIGS = app.config["CONFIGS"]
+
+firebase = pyrebase.initialize_app(CONFIGS)
+db = firebase.database()
 
 @app.route('/hello')
-def hellow_world():
+def hello_world():
     return 'Hello, World!'
 
 def get_saved_data():
@@ -97,4 +107,12 @@ def show_user_profile(username="gobsin.hoblin"):
 
 @app.route('/checkout')
 def checkout():
-    return render_template('checkout.html')
+    return render_template('checkout.html', options=DEFAULT)
+
+@app.route('/checkout/orders', methods=['POST'])
+def submit_order():
+    flash('Thanks for submitting your order!')
+    new_order = dict(request.form)
+    db.child("orders").push(new_order)
+    return redirect(url_for('checkout')), 201
+
