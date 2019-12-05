@@ -32,12 +32,25 @@
     <br>
     <input type="submit" name="submitbutton" value="Add to Cart!">
 </form>
-<div class="c">
+<form class="c" action="{{ url_for('create_item') }}" method="POST">
+    <p class="item">Item Name</p>
+    <input type="text" name="name">
+    <br>
+    <p class="item">SKU</p>
+    <input type="text" name="sku">
+    <br>
+    <p class="item">Amount Cents</p>
+    <input type="number" name="amount_cents">
+    <br>
+    <p class="item">Description</p>
+    <input type="text" name="description">
+    <br>
+    <input type="submit" name="submitbutton" value="Add Item!!">
     <p>ahh, would ya look at that??</p>
     <p>would ya just look at that??</p>
-    {% for option in options['rocks'] %}
-        <p>{{ option }}</p>
+    {% for item in items %}
+        <p>{{ item['amount_cents'] }}</p>
     {% endfor %}
-</div>
+</form>
 {% endblock %}
 

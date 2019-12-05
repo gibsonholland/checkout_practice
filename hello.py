@@ -5,6 +5,7 @@ from custom_converters.float_converter import ConvertFloat
 import pyrebase
 import json
 from options import DEFAULT
+ 
 
 """ 
 
@@ -23,14 +24,10 @@ app.url_map.converters['float'] = ConvertFloat
 app.config.from_object('config')
 
 app.secret_key = app.config["SECRET_KEY"]
-CONFIGS = app.config["CONFIGS"]
+REALTIME = app.config["REALTIME"]
 
-firebase = pyrebase.initialize_app(CONFIGS)
+firebase = pyrebase.initialize_app(REALTIME)
 db = firebase.database()
-
-@app.route('/hello')
-def hello_world():
-    return 'Hello, World!'
 
 def get_saved_data():
     try:
@@ -105,9 +102,12 @@ def show_user_profile(username="gobsin.hoblin"):
     # show the user profile for that user
     return 'Username is {}'.format(username)
 
-@app.route('/checkout')
+@app.route('/checkout', methods=['GET'])
 def checkout():
-    return render_template('checkout.html', options=DEFAULT)
+    items = db.child("items").get().val().values()
+    print(items)
+    # price = items.__getattribute__('amount_cents') / 100
+    return render_template('checkout.html', items=items)
 
 @app.route('/checkout/orders', methods=['POST'])
 def submit_order():
@@ -116,3 +116,9 @@ def submit_order():
     db.child("orders").push(new_order)
     return redirect(url_for('checkout')), 201
 
+@app.route('/checkout/item', methods=['POST'])
+def create_item():
+    flash('Thanks for creating a new item!')
+    new_item = dict(request.form)
+    db.child("items").push(new_item)
+    return redirect(url_for('checkout')), 201
