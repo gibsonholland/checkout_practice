@@ -1,11 +1,10 @@
 from flask import (Flask, render_template, url_for,
                    redirect, request, make_response, 
-                   flash, jsonify)
+                   flash, jsonify, session)
 from custom_converters.float_converter import ConvertFloat
 import firebase_admin
 from firebase_admin import db, credentials
 from config import SECRET_KEY
-import pyrebase
 import json
 import decimal
 from options import DEFAULT
