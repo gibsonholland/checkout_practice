@@ -18,20 +18,16 @@
     {% endwith %}
 </div>
 <form class="b" action="{{ url_for('submit_order') }}" method="POST">
-    <p class="item">Red Balloons</p>
-    <p class="price">$10 / Dozen</p>
-    <input type="number" name="redballoons">
+    {% for item in items %}
+    <p class="item_details">{{ item['name'].title() }} | ${{ item['price'] }}</p>
+    <input type="number" name="{{ item['name'] }}">
+    {% endfor %}
     <br>
-    <p class="item">Blue Balloons</p>
-    <p class="price">$11 / Dozen</p>
-    <input type="number" name="blueballoons">
-    <br>
-    <p class="item">Yellow Balloons</p>
-    <p class="price">$9 / Dozen</p>
-    <input type="number" name="yellowballoons">
     <br>
     <input type="submit" name="submitbutton" value="Add to Cart!">
 </form>
+
+<!-- 
 <form class="c" action="{{ url_for('create_item') }}" method="POST">
     <p class="item">Item Name</p>
     <input type="text" name="name">
@@ -47,10 +43,8 @@
     <br>
     <input type="submit" name="submitbutton" value="Add Item!!">
     <p>ahh, would ya look at that??</p>
-    <p>would ya just look at that??</p>
-    {% for item in items %}
-        <p>{{ item['amount_cents'] }}</p>
-    {% endfor %}
+    <p>would ya just look at that??</p> 
 </form>
-{% endblock %}
+-->
 
+{% endblock %}

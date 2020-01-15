@@ -2,8 +2,12 @@ from flask import (Flask, render_template, url_for,
                    redirect, request, make_response, 
                    flash, jsonify)
 from custom_converters.float_converter import ConvertFloat
+import firebase_admin
+from firebase_admin import db, credentials
+from config import SECRET_KEY
 import pyrebase
 import json
+import decimal
 from options import DEFAULT
  
 
@@ -21,13 +25,19 @@ This creates a local URL and enabled debug mode
 
 app = Flask(__name__)
 app.url_map.converters['float'] = ConvertFloat
-app.config.from_object('config')
 
-app.secret_key = app.config["SECRET_KEY"]
-REALTIME = app.config["REALTIME"]
+cred = credentials.Certificate('/Users/gibson.holland/Documents/checkout_practice/keys.json')
+app.secret_key = SECRET_KEY
+default_app = firebase_admin.initialize_app(
+    credential=cred,
+    options={
+    'databaseURL': 'https://checkout-practice.firebaseio.com'
+    },
+    name='checkout-practice'
+)
 
-firebase = pyrebase.initialize_app(REALTIME)
-db = firebase.database()
+CHECKOUT = db.reference(path='/orders', app=default_app)
+ITEMS = db.reference(path='/items', app=default_app)
 
 def get_saved_data():
     try:
@@ -104,8 +114,13 @@ def show_user_profile(username="gobsin.hoblin"):
 
 @app.route('/checkout', methods=['GET'])
 def checkout():
-    items = db.child("items").get().val().values()
+    items = ITEMS.get().values()
     print(items)
+    for item in items:
+        price = (item['price']), type(item['price'])
+        print(price)
+    for item in items:
+        print(item)
     # price = items.__getattribute__('amount_cents') / 100
     return render_template('checkout.html', items=items)
 
@@ -113,12 +128,12 @@ def checkout():
 def submit_order():
     flash('Thanks for submitting your order!')
     new_order = dict(request.form)
-    db.child("orders").push(new_order)
+    CHECKOUT.push(new_order)
     return redirect(url_for('checkout')), 201
 
 @app.route('/checkout/item', methods=['POST'])
 def create_item():
     flash('Thanks for creating a new item!')
     new_item = dict(request.form)
-    db.child("items").push(new_item)
+    ITEMS.push(new_item)
     return redirect(url_for('checkout')), 201
