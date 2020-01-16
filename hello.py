@@ -111,6 +111,13 @@ def show_user_profile(username="gobsin.hoblin"):
     # show the user profile for that user
     return 'Username is {}'.format(username)
 
+def get_added_items():
+    try:
+        data = json.loads(request.cookies.get('items'))
+    except TypeError:
+        data = {}
+    return data
+
 @app.route('/checkout', methods=['GET'])
 def checkout():
     items = ITEMS.get().values()
@@ -130,6 +137,15 @@ def submit_order():
     CHECKOUT.push(new_order)
     return redirect(url_for('checkout')), 201
 
+@app.route('/checkout/add_item', methods=['POST'])
+def add_item():
+    flash('You added something to your cart!')
+    response = make_response(redirect(url_for('checkout')))
+    data = {}
+    data.update(dict(request.form.items()))
+    response.set_cookie('items', json.dumps(data))
+    return response
+
 @app.route('/checkout/item', methods=['POST'])
 def create_item():
     flash('Thanks for creating a new item!')
@@ -137,6 +153,9 @@ def create_item():
     ITEMS.push(new_item)
     return redirect(url_for('checkout')), 201
 
-@app.route('/checkout/cart')
+@app.route('/cart')
 def view_cart():
-    return 'cart'
+    data = get_added_items()
+    if data == {}:
+        data = 'The cart is empty!'
+    return render_template('cart.html', data=data)

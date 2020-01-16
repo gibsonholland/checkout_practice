@@ -17,7 +17,7 @@
         {% endif %}
     {% endwith %}
 </div>
-<form class="b" action="{{ url_for('submit_order') }}" method="POST">
+<form class="b" action="{{ url_for('add_item') }}" method="POST">
     {% for item in items %}
     <p class="item_details">{{ item['name'].title() }} | ${{ item['price'] }}</p>
     <input type="number" name="{{ item['name'] }}">

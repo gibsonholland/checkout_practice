@@ -6,6 +6,7 @@ body {
     min-height: 900px;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: 150px repeat(4, 1fr);
+    font-family: 'Inconsolata', monospace;
     row-gap: 2%;
 }
 
@@ -20,7 +21,6 @@ body {
 .header_text {
     grid-row: 2 / span 1;
     text-align: center;
-    font-family: 'Inconsolata', monospace;
     vertical-align: middle;
 }
 
@@ -30,7 +30,6 @@ body {
     background-color: hsla(120, 100%, 20%, 1);
     border: 2px solid hsla(120, 100%, 20%, 1);
     border-radius: 10px;
-    font-family: 'Inconsolata', monospace;
     text-align: center;
     display: grid;
 }
@@ -51,6 +50,21 @@ body {
 
 .cart {
     grid-area: 3 / 3 / 4 / 4;
+    text-align: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+
+.cart_button {
+    background-color: hsla(120, 100%, 20%, 1);
+    border: 2px solid hsla(120, 100%, 20%, 1);
+    border-radius: 10px;
+    grid-area: 2 / 2 / 3 / 3;
+}
+
+a {
+    color: hsla(120, 20%, 96%, 1);
 }
 
 input {
