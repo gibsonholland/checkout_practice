@@ -136,3 +136,7 @@ def create_item():
     new_item = dict(request.form)
     ITEMS.push(new_item)
     return redirect(url_for('checkout')), 201
+
+@app.route('/checkout/cart')
+def view_cart():
+    return 'cart'

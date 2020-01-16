@@ -49,6 +49,10 @@ body {
     grid-row: 2 / span 1;
 }
 
+.cart {
+    grid-area: 3 / 3 / 4 / 4;
+}
+
 input {
     border-radius: 3px;
 }
