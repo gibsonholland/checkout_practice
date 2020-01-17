@@ -1,25 +1,78 @@
-{% extends "checkout_layout.html" %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Checkout | Flask Basics</title>
+        <link rel="stylesheet" href="/static/CSS/checkout.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata:400,700&display=swap">
+        <script src="https://checkout.fundboxpay.com/static/merchant/checkout.js"></script>
+    </head>
 
-{% block title %}Checkout | {{ super() }}{% endblock %}
+    <body>
+        <div class="header">
+            <header>
+                <h1 class="header_text">Cart Page</h1>
+            </header>
+        </div>
 
-{% block header %}Cart Page{% endblock %}
+        <div class="content">
+            <div class="items">
+                <div class="a">
+                    <span>Your Cart</span>
+                </div>
+                <div class="b">
+                    {% for item in checkout_items %}
+                        <p class="item_details">{{ item['name'].title() }} | ${{ item['price']}} | X {{ item['quantity'] }}</p>
+                    {% endfor %}
+                    <form action="{{ url_for('submit_order') }}" method="POST">
+                        <br>
+                        <br>
+                        <input hidden name="orderDetails" value="{{ orderDetails }}">Cart Total ${{ cart_total}}</span>
+                        <br>
+                        <br>
+                        <input id="submit_order" type="submit" value="Submit Order">
+                    </form>
+                </div>
+            </div>
+        </div>
 
-{% block content %}
-<div class="a">
-    <span>Your Cart</span>
-</div>
-<div class="b">
-    {% for item in checkout_items %}
-        <p class="item_details">{{ item['name'].title() }} | ${{ item['price']}} | X {{ item['quantity'] }}</p>
-    {% endfor %}
-    <form action="{{ url_for('submit_order') }}" method="POST">
-        <br>
-        <br>
-        <input hidden name="orderDetails" value="{{ orderDetails }}">Cart Total ${{ cart_total}}</span>
-        <br>
-        <br>
-        <input type="submit" value="Submit Order">
-    </form>
-</div>
+        <div class="cart">
+            <div class="cart_button">
+                <a href="/checkout">Edit Cart</a>
+            </div>
+        </div>
+        <script>
+            window.addEventListener('load', () => {
+              console.log('page is fully loaded');
+            });
 
-{% endblock %}
+            var fbxHandler = FbxCheckout.configure({
+                fbxKey: 'pk_test_c3a8c86c-6941-431d-956f-2a21a6092ea5',
+                onComplete: function (fbxOrderToken) {
+                    // Token to be submitted to the backend for seller approval. this token maps to the 'order'.
+                }
+            });
+
+            document.getElementById('submit_order').addEventListener('click', function (e) {
+            // Open Checkout with further options:
+            fbxHandler.open({
+                ctaType: "confirm-and-pay",
+                orderDetails: {
+                    amount_cents: "100500",
+                    shipping_amount_cents: "500",
+                    checkout_items: [
+                        {
+                            name: "Toy",
+                            sku: "SKU-XYZ",
+                            description: "some description",
+                            total_amount_cents: "100000",
+                            item_amount_cents: "100000",
+                            quantity: 1
+                        }
+                    ]
+                }
+            });
+            e.preventDefault();
+            });
+        </script>
+    </body>
+</html>

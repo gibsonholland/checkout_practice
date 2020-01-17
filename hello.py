@@ -143,7 +143,7 @@ def submit_order():
     new_order = dict(request.form)
     CHECKOUT.push(new_order)
     print(new_order, type(new_order))
-    return redirect(url_for('checkout')), 201
+    return redirect(url_for('view_cart')), 201
 
 @app.route('/checkout/add_item', methods=['POST'])
 def add_item():
@@ -163,7 +163,6 @@ def create_item():
 
 @app.route('/cart')
 def view_cart():
-    # response = make_response(redirect(url_for('submit_order')))
     available_items = ITEMS.get().values()
     cart_data = get_added_items()
 
@@ -191,7 +190,7 @@ def view_cart():
         'shipping_amount_cents': str(shipping_amount_cents),
         'checkout_items': checkout_items
     }
-    # response.set_cookie('order', json.dumps(orderDetails))
+    
     print(orderDetails, checkout_items, cart_total, amount_cents, type(amount_cents))
     return render_template('cart.html', checkout_items=checkout_items, amount_cents=amount_cents,
                             shipping_amount_cents=shipping_amount_cents, cart_total=cart_total,
