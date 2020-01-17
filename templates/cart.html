@@ -9,12 +9,12 @@
     <span>Da Cart</span>
 </div>
 <form class="b" action="{{ url_for('submit_order') }}" method="POST">
-    {% for item in data %}
+    {% for item in cart_data %}
         <span class="flashes">{{ item }}</span>
     {% endfor %}
     <br>
     <br>
-    <input type="submit" name="submitbutton" value="Submit Order">
+    <input type="submit" value="Submit Order">
 </form>
 
 {% endblock %}

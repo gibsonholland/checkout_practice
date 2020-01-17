@@ -133,8 +133,9 @@ def checkout():
 @app.route('/checkout/orders', methods=['POST'])
 def submit_order():
     flash('Thanks for submitting your order!')
-    new_order = dict(request.form)
+    new_order = get_added_items()
     CHECKOUT.push(new_order)
+    print(new_order, type(new_order))
     return redirect(url_for('checkout')), 201
 
 @app.route('/checkout/add_item', methods=['POST'])
@@ -155,7 +156,27 @@ def create_item():
 
 @app.route('/cart')
 def view_cart():
-    data = get_added_items()
-    if data == {}:
-        data = 'The cart is empty!'
-    return render_template('cart.html', data=data)
+    available_items = ITEMS.get().values()
+    cart_total = 0
+    cart_data = get_added_items()
+    orderDetails: {
+        amount_cents: "0",
+    }
+    checkout_items = []
+
+    if cart_data == {}:
+        cart_data = 'The cart is empty!'
+    else:
+        for item in available_items:
+            for cart_item in cart_data:
+                name = cart_item
+                quantity = int(cart_data[cart_item])
+                if name == item['name']:
+                    total_amount_cents = int(item['item_amount_cents']) * quantity
+                    cart_total += quantity * float(item['price'])
+                    item['total_amount_cents'] = str(total_amount_cents)
+                    item['quantity'] = str(quantity)
+                    checkout_items.append(item)
+                    
+    print(checkout_items, cart_total)
+    return render_template('cart.html', cart_data=cart_data)

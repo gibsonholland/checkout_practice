@@ -24,10 +24,10 @@
     {% endfor %}
     <br>
     <br>
-    <input type="submit" name="submitbutton" value="Add to Cart!">
+    <input type="submit" value="Add to Cart!">
 </form>
 
-<!-- 
+<!--
 <form class="c" action="{{ url_for('create_item') }}" method="POST">
     <p class="item">Item Name</p>
     <input type="text" name="name">
@@ -36,12 +36,14 @@
     <input type="text" name="sku">
     <br>
     <p class="item">Amount Cents</p>
-    <input type="number" name="amount_cents">
+    <input type="number" name="item_amount_cents">
     <br>
     <p class="item">Description</p>
     <input type="text" name="description">
+    <p class="item">Price</p>
+    <input type="text" name="price">
     <br>
-    <input type="submit" name="submitbutton" value="Add Item!!">
+    <input type="submit" value="Add Item!!">
     <p>ahh, would ya look at that??</p>
     <p>would ya just look at that??</p> 
 </form>
