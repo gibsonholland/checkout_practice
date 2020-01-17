@@ -118,6 +118,13 @@ def get_added_items():
         data = {}
     return data
 
+def get_order_details():
+    try:
+        data = json.loads(request.cookies.get('order'))
+    except TypeError:
+        data = {}
+    return data
+
 @app.route('/checkout', methods=['GET'])
 def checkout():
     items = ITEMS.get().values()
@@ -133,7 +140,7 @@ def checkout():
 @app.route('/checkout/orders', methods=['POST'])
 def submit_order():
     flash('Thanks for submitting your order!')
-    new_order = get_added_items()
+    new_order = dict(request.form)
     CHECKOUT.push(new_order)
     print(new_order, type(new_order))
     return redirect(url_for('checkout')), 201
@@ -156,16 +163,17 @@ def create_item():
 
 @app.route('/cart')
 def view_cart():
+    # response = make_response(redirect(url_for('submit_order')))
     available_items = ITEMS.get().values()
-    cart_total = 0
     cart_data = get_added_items()
-    orderDetails: {
-        amount_cents: "0",
-    }
+
+    cart_total = 0
+    shipping_amount_cents = 0
+    amount_cents = 0
     checkout_items = []
 
     if cart_data == {}:
-        cart_data = 'The cart is empty!'
+        return 'The cart is empty!'
     else:
         for item in available_items:
             for cart_item in cart_data:
@@ -177,6 +185,14 @@ def view_cart():
                     item['total_amount_cents'] = str(total_amount_cents)
                     item['quantity'] = str(quantity)
                     checkout_items.append(item)
-                    
-    print(checkout_items, cart_total)
-    return render_template('cart.html', cart_data=cart_data)
+    amount_cents = str(round(cart_total * 100) + int(shipping_amount_cents))
+    orderDetails = {
+        'amount_cents': amount_cents,
+        'shipping_amount_cents': str(shipping_amount_cents),
+        'checkout_items': checkout_items
+    }
+    # response.set_cookie('order', json.dumps(orderDetails))
+    print(orderDetails, checkout_items, cart_total, amount_cents, type(amount_cents))
+    return render_template('cart.html', checkout_items=checkout_items, amount_cents=amount_cents,
+                            shipping_amount_cents=shipping_amount_cents, cart_total=cart_total,
+                            cart_data=cart_data, orderDetails=orderDetails)
